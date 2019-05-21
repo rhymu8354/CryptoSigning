@@ -21,8 +21,8 @@ namespace CryptoSigning {
      */
     struct Verify::Impl {
         /**
-         * This is the public key, in PEM format, to use in verifying
-         * cryptographic signatures.
+         * This is the public or private key, in PEM format, to use in
+         * verifying cryptographic signatures.
          */
         std::unique_ptr< EVP_PKEY, std::function< void(EVP_PKEY*) > > key;
     };
@@ -57,6 +57,22 @@ namespace CryptoSigning {
                 EVP_PKEY_free(p);
             }
         );
+        if (key == NULL) {
+            keyInput.reset(
+                BIO_new_mem_buf(
+                    keyPem.data(),
+                    (int)keyPem.size()
+                )
+            );
+            key.reset(
+                PEM_read_bio_PrivateKey(
+                    keyInput.get(),
+                    NULL,
+                    NULL,
+                    NULL
+                )
+            );
+        }
         if (key == NULL) {
             return false;
         }

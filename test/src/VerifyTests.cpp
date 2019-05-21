@@ -43,6 +43,65 @@ struct VerifyTests
     );
 
     /**
+     * This is the private key, not encrypted, to use to verify the
+     * signature, in PEM format.
+     */
+    const std::string privateKey = (
+        "-----BEGIN PRIVATE KEY-----\r\n"
+        "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\r\n"
+        "vRePIbo+jLVud6N90g1eqj6z/lFfgQ==\r\n"
+        "-----END PRIVATE KEY-----\r\n"
+    );
+
+    /**
      * This is the test data for which a signature will be verified.
      */
     std::vector< uint8_t > dataChunk;
@@ -149,6 +208,11 @@ TEST_F(VerifyTests, ConfigureInvalidKey) {
 
 TEST_F(VerifyTests, VerifyValidSignatureWhenConfigured) {
     (void)verify.Configure(key);
+    EXPECT_TRUE(verify(dataChunk, validSignature));
+}
+
+TEST_F(VerifyTests, VerifyValidSignatureUsingPrivateKey) {
+    (void)verify.Configure(privateKey);
     EXPECT_TRUE(verify(dataChunk, validSignature));
 }
 

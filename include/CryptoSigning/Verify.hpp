@@ -18,7 +18,7 @@ namespace CryptoSigning {
 
     /**
      * This class is used to verify a cryptographic signature for a chunk of
-     * data, using a public key in PEM format.
+     * data, using a public or private key in PEM format.
      */
     class Verify {
         // Lifecycle management
@@ -38,11 +38,12 @@ namespace CryptoSigning {
 
         /**
          * This method sets up the instance to verify cryptographic signatures
-         * made with the private key that corresponds to the given public key.
+         * made with the private key that corresponds to the given public key,
+         * or by using the same private key directly.
          *
          * @param[in] keyPem
-         *     This is the public key, in PEM format, to use in verifying
-         *     cryptographic signatures.
+         *     This is the public or private key, in PEM format, to use in
+         *     verifying cryptographic signatures.
          *
          * @return
          *     An indication of whether or not the instance was successfully
