@@ -10,6 +10,7 @@
  */
 
 #include <memory>
+#include <stddef.h>
 #include <stdint.h>
 #include <string>
 #include <vector>
@@ -50,6 +51,34 @@ namespace CryptoSigning {
          *     configured is returned.
          */
         bool Configure(const std::string& keyPem);
+
+        /**
+         * This method sets up the instance to verify cryptographic signatures
+         * made with the private key that corresponds to the given public key,
+         * or by using the same private key directly.
+         *
+         * @param[in] keyModulus
+         *     This points to the memory containing the modulus
+         *     of the public key to use in verifying cryptographic signatures.
+         *
+         * @param[in] keyModulusLength
+         *     This is the length, in bytes, of the modulus
+         *     of the public key to use in verifying cryptographic signatures.
+         *
+         * @param[in] keyExponentModulus
+         *     This points to the memory containing the public exponent
+         *     of the public key to use in verifying cryptographic signatures.
+         *
+         * @param[in] keyExponentModulusLength
+         *     This is the length, in bytes, of the public exponent
+         *     of the public key to use in verifying cryptographic signatures.
+         */
+        void Configure(
+            const uint8_t* keyModulus,
+            size_t keyModulusLength,
+            const uint8_t* keyExponent,
+            size_t keyExponentLength
+        );
 
         /**
          * This method verifies that the given cryptographic signature matches

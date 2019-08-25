@@ -11,6 +11,9 @@
 #include <functional>
 #include <memory>
 #include <openssl/bio.h>
+#include <openssl/bn.h>
+#include <openssl/evp.h>
+#include <openssl/rsa.h>
 #include <openssl/pem.h>
 #include <string>
 
@@ -78,6 +81,26 @@ namespace CryptoSigning {
         }
         impl_->key = std::move(key);
         return true;
+    }
+
+    void Verify::Configure(
+        const uint8_t* keyModulus,
+        size_t keyModulusLength,
+        const uint8_t* keyExponent,
+        size_t keyExponentLength
+    ) {
+        BIGNUM* n = BN_bin2bn(keyModulus, (int)keyModulusLength, NULL);
+        BIGNUM* e = BN_bin2bn(keyExponent, (int)keyExponentLength, NULL);
+        RSA* rsa = RSA_new();
+        RSA_set0_key(rsa, n, e, NULL);
+        std::unique_ptr< EVP_PKEY, std::function< void(EVP_PKEY*) > > key(
+            EVP_PKEY_new(),
+            [](EVP_PKEY* p){
+                EVP_PKEY_free(p);
+            }
+        );
+        EVP_PKEY_assign_RSA(key.get(), rsa);
+        impl_->key = std::move(key);
     }
 
     bool Verify::operator()(
